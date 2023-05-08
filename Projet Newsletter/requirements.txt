@@ -1,8 +1,0 @@
-beautifulsoup4
-google-api-python-client
-pandas
-google-auth
-google-auth-oauthlib
-google-auth-httplib2
-nltk
-googletrans
