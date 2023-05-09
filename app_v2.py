@@ -731,22 +731,35 @@ def extract_keywords(text, num_keywords=10):
         top_keywords = keyword_freq.most_common(num_keywords)
         return [keyword[0] for keyword in top_keywords]
 
-def analyze_keywords(articles, query_keywords):
-    keyword_count = Counter()
+def analyze_keywords(articles, keywords):
+    keyword_data = {}
+
+    for keyword in keywords:
+        keyword_data[keyword] = 0
 
     for article in articles:
-        content = article['content']
-        for keyword in query_keywords:
-            if keyword.lower() in content.lower():
-                keyword_count[keyword] += 1
+        # Récupérer le lien de l'article
+        link = article[2]
 
-    return keyword_count
+        # Récupérer le contenu de la page web
+        response = requests.get(link, verify=False)
+        soup = BeautifulSoup(response.content, "html.parser")
+
+        # Extraire le texte de l'article
+        content = soup.get_text()
+
+        # Analyser les mots-clés dans le contenu
+        for keyword in keywords:
+            keyword_count = content.lower().count(keyword.lower())
+            keyword_data[keyword] += keyword_count
+
+    return keyword_data
 
 def analyze_websites(articles):
     website_count = Counter()
 
     for article in articles:
-        website = article['link']  # Utilisez la clé 'link' au lieu de 'website'
+        website = article[2]  # Utilisez la clé 'link' au lieu de 'website'
         website_count[website] += 1
 
     return website_count
